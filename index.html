@@ -7,16 +7,18 @@
 </head>
 <body>
     <h1>Voice Input Chatbot</h1>
-    <button id="start-btn">Start Listening</button>
+    <button id="toggle-btn">Start Listening</button>
     <p id="response"></p>
 
     <script>
-        const startBtn = document.getElementById('start-btn');
+        const toggleBtn = document.getElementById('toggle-btn');
         const responseText = document.getElementById('response');
         
         // Initialize the SpeechRecognition API
         const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
         
+        let isListening = false;
+
         recognition.onresult = (event) => {
             const voiceInput = event.results[0][0].transcript;
             console.log('You said: ', voiceInput);
@@ -30,8 +32,15 @@
             console.error('Error occurred in recognition: ' + event.error);
         };
 
-        startBtn.addEventListener('click', () => {
-            recognition.start();
+        toggleBtn.addEventListener('click', () => {
+            if (isListening) {
+                recognition.stop();
+                toggleBtn.innerText = 'Start Listening';
+            } else {
+                recognition.start();
+                toggleBtn.innerText = 'Stop Listening';
+            }
+            isListening = !isListening; // Toggle listening state
         });
 
         function simpleChatbot(input) {
